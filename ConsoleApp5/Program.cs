@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Linq;
-
 
 namespace HospitalPatientRecordSystem
 {
@@ -15,35 +14,46 @@ namespace HospitalPatientRecordSystem
             string[] medicalConditions = { "Hypertension", "Diabetes", "Pneumonia", "Arthritis", "Asthma", "Migraine", "Fracture", "Infection" };
             string[] patientIDs = { "MRN001", "MRN002", "MRN003", "MRN004", "MRN005", "MRN006", "MRN007", "MRN008" };
             string[] admissionDates = { "2024-01-15", "2024-01-20", "2024-02-03", "2024-02-10", "2024-02-15", "2024-02-18", "2024-02-22", "2024-03-01" };
-            string[] emergencyContacts = { "Maria Martinez", "Robert Chen", "Lisa Johnson", "Carlos Garcia", "Jennifer Kim", "Juan Rodriguez", "Susan Johnson", "Thomas Wilson" };
-            string[] treatmentStatus = { "Stable", "Improving", "Critical", "Stable", "Improving", "Stable", "Recovering", "Critical" };  
+            string[] treatmentStatus = { "Stable", "Improving", "Critical", "Stable", "Improving", "Stable", "Recovering", "Critical" };
 
-           string searchName = String.Empty;
-           bool validInput = false;
+            string searchName = string.Empty;
+            bool validInput = false;
 
-            while (!validInput) { 
-            Console.Write("Enter patient name: ");
-            searchName = Console.ReadLine();
+            // Input validation
+            while (!validInput)
+            {
+                Console.Write("Enter patient's first name (or part of it): ");
+                searchName = Console.ReadLine()?.Trim() ?? string.Empty;
 
-            if (!string.IsNullOrEmpty(searchName) && searchName.All (c => char.IsLetter(c) || c == ' ' || c == '.'))
+                if (!string.IsNullOrEmpty(searchName)
+                    && searchName.All(c => char.IsLetter(c) || c == ' ' || c == '.')
+                    && searchName.Length >= 2)
                 {
                     validInput = true;
                 }
-
                 else
                 {
-                    Console.WriteLine("Invalid, please try again!"); 
+                    Console.WriteLine("Invalid input. Please enter at least 2 letters.");
                 }
             }
 
-            int i = 0;
             bool found = false;
+            int recordCount = 0;
 
-            while (i < patientNames.Length)
+            Console.WriteLine($"\n=== SEARCH RESULTS FOR \"{searchName}\" ===");
+
+            for (int i = 0; i < patientNames.Length; i++)
             {
-                if (patientNames[i].Contains(searchName, StringComparison.OrdinalIgnoreCase))
+                // Extract first name only (everything before the first space)
+                string firstName = patientNames[i].Split(' ')[0];
+
+                // Check if input is contained in the first name (case-insensitive)
+                if (firstName.Contains(searchName, StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine($"\n=== PATIENT MEDICAL RECORD ===");
+                    found = true;
+                    recordCount++;
+
+                    Console.WriteLine($"\n--- PATIENT RECORD #{recordCount} ---");
                     Console.WriteLine($"Name: {patientNames[i]}");
                     Console.WriteLine($"Age: {ages[i]}");
                     Console.WriteLine($"Room: {roomNumbers[i]}");
@@ -51,17 +61,16 @@ namespace HospitalPatientRecordSystem
                     Console.WriteLine($"Diagnosis: {medicalConditions[i]}");
                     Console.WriteLine($"Admission Date: {admissionDates[i]}");
                     Console.WriteLine($"Patient ID: {patientIDs[i]}");
-                    found = true;
-                    break;
+                    Console.WriteLine($"Treatment Status: {treatmentStatus[i]}");
                 }
-                i++;
-               
             }
 
-            if(!found)
+            if (!found)
             {
-                Console.WriteLine("Patient doesn't exist, please reach out to admin staff");
+                Console.WriteLine($"Patient with first name containing \"{searchName}\" doesn't exist. Please reach out to admin staff.");
             }
+
+            Console.WriteLine("\n=== END OF RESULTS ===");
         }
     }
 }
