@@ -22,7 +22,7 @@ namespace HospitalPatientRecordSystem
             // Input validation
             while (!validInput)
             {
-                Console.Write("Enter patient's first name (or part of it): ");
+                Console.Write("Enter name:  ");
                 searchName = Console.ReadLine()?.Trim() ?? string.Empty;
 
                 if (!string.IsNullOrEmpty(searchName)
